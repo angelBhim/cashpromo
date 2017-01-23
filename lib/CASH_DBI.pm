@@ -19,12 +19,12 @@ sub get_new_subscriber {
     my $dbh = DBI->connect($dsn, $host->{'username'}, $host->{'password'});
 
     if ($dbh) {
-        my $sql = "SELECT 
+        my $sql = "SELECT
                     s.msisdn, s.service_id, $host->{'access_code'} AS ac
                     FROM
                         Dmp_Transaction.subscribers s
                             INNER JOIN
-                        (SELECT 
+                        (SELECT
                             a.msisdn
                         FROM
                             Dmp_Transaction.subscribers a
@@ -35,7 +35,7 @@ sub get_new_subscriber {
                     WHERE
                         s.active = 1
                             AND DATE(s.sub_on) = (CURDATE() - INTERVAL 1 DAY)
-                            AND s.service_id IN (SELECT 
+                            AND s.service_id IN (SELECT
                                 service_id
                             FROM
                                 Dmp_Content.`services` ds
