@@ -3,6 +3,8 @@ use warnings;
 use DBI;
 use Data::Dumper qw(Dumper);
 
+my $dbname = 'Dmp_Transaction';
+my $dbport = '3306';
 
 package CASH_DBI;
 
@@ -10,7 +12,7 @@ package CASH_DBI;
 
 sub get_new_subscriber {
     my @subs;
-    my ($dbname, $host, $dbport) = @_;
+    my ($host) = @_;
 
 
     my $dsn = "DBI:mysql:database=$dbname;host=$host->{'host'};port=$dbport";
@@ -18,7 +20,7 @@ sub get_new_subscriber {
 
     if ($dbh) {
         my $sql = "SELECT 
-                    s.msisdn, s.service_id, {$host} AS ac
+                    s.msisdn, s.service_id, $host->{'access_code'} AS ac
                     FROM
                         Dmp_Transaction.subscribers s
                             INNER JOIN
@@ -42,20 +44,20 @@ sub get_new_subscriber {
                             WHERE
                                 ds.service_active = 1
                                     AND ds.is_cashagana = 1
-                                    AND dsc.`shortcode_name` = {$host});";
+                                    AND dsc.`shortcode_name` = $host->{'access_code'}) limit 3;";
 
         my $sth = $dbh->prepare($sql) or die "prepare statement failed: $dbh->errstr()";
         $sth->execute() or die "execution failed: $dbh->errstr()";
         # print $sth->rows. " rows found.\n";
 
         while (my $ref = $sth->fetchrow_hashref()) {
-          push(@subs, $ref->{'msisdn'}."|".$ref->{'service_id'}."|".$ref->{'ac'});
+            push(@subs, $ref->{'msisdn'}."|".$ref->{'service_id'}."|".$ref->{'ac'});
+            # print $ref->{'msisdn'};
         }
 
         $sth->finish;
     }
-
-  return $host;
+    return @subs;
 
 }
 

@@ -8,18 +8,16 @@ use Data::Dumper qw(Dumper);
 use CASH_DBI;
 use Helper;
 
-my $dbport = '3306';
-my $dbname = 'Dmp_Transaction';
-my $cash;
+my @cash;
 
 
 
 foreach my $config (sort keys %hosts) {
-  my $cash = CASH_DBI::get_new_subscriber($dbname, \%{$hosts{$config}} , $dbport);
-  
-}
+	push(@cash, CASH_DBI::get_new_subscriber(\%{$hosts{$config}}));
 
-print Dumper(\$cash) ."\n";
+}
+print Dumper(\@cash) ."\n";
+
 
 
 # localhost
