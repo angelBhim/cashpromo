@@ -10,15 +10,17 @@ use Helper;
 
 my $dbport = '3306';
 my $dbname = 'Dmp_Transaction';
+my $cash;
 
-
-#print Dumper(\%hosts) ."\n";
 
 
 foreach my $config (sort keys %hosts) {
   my $cash = CASH_DBI::get_new_subscriber($dbname, \%{$hosts{$config}} , $dbport);
   
 }
+
+print Dumper(\$cash) ."\n";
+
 
 # localhost
 # $hosts{'2910'}{'host'} = 'localhost'; #public
