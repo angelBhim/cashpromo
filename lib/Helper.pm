@@ -51,11 +51,11 @@ $hosts{'2624_melanie'}{'access_code'} = '2624';
 
 # # RIA
 # # $hosts{'2864'}{'host'} = '10.208.4.239';  #private
-$hosts{'ria_2864'}{'host'} = '23.253.196.163'; #public
-$hosts{'ria_2864'}{'username'} = 'dmp_push';
-$hosts{'ria_2864'}{'password'} = '2910r!aPush';
-$hosts{'ria_2864'}{'service_id'} = '5858';
-$hosts{'ria_2864'}{'access_code'} = '2864';
+$hosts{'2864_ria'}{'host'} = '23.253.196.163'; #public
+$hosts{'2864_ria'}{'username'} = 'dmp_push';
+$hosts{'2864_ria'}{'password'} = '2910r!aPush';
+$hosts{'2864_ria'}{'service_id'} = '5858';
+$hosts{'2864_ria'}{'access_code'} = '2864';
 
 # # $hosts{'2949'}{'host'} = '10.208.4.239';  #private
 $hosts{'2949_ria'}{'host'} = '23.253.196.163'; #public
