@@ -1,42 +1,54 @@
 
 use strict;
 use warnings;
+use Text::CSV;
+use DateTime;
+use LWP::Simple;
+use JSON qw( decode_json );
+use Data::Dumper qw(Dumper);
 
 use lib 'lib';
-use Data::Dumper qw(Dumper);
-use DBD::CSV;
-use DateTime;
 use CASH_DBI;
 use Helper;
 
 
-my @cash;
+my @list;
 my $dt = DateTime->now;
 my $ymd = $dt->ymd;
 
+my $csv = Text::CSV->new({ binary => 1, auto_diag => 1, eol => "\n"})
+    or die "Cannot use CSV: " . Text::CSV->error_diag();
 
-open (FH, ">>logs/$ymd" . "_winners.csv") or die "$!";
-print FH "msisdn, access code ,  top up\
-";
+# open in append mode
+open my $fh, ">>", "logs/$ymd" . "_winners.csv" or die "Failed to open file: $!";
+$csv->print($fh, [ "msisdn", "service_id", "access_code", "status" ]);
 
-
+# get all new subs
 foreach my $config (sort keys %hosts) {
-	push(@cash, CASH_DBI::get_new_subscriber(\%{$hosts{$config}}));
+	push(@list, CASH_DBI::get_new_subscriber(\%{$hosts{$config}}));
 }
 
 
-
-my @winners;
-
-# choose winner
-for (my $i = 0; $i<2; $i++) {
-    push(@winners, $cash[rand @cash]);
+for (my $i = 0; $i<3; $i++) {
+	# choose winner
+	my $win = $list[rand @list];
+	my @details = split(/:+/, $win);
+	
+	# topup here
+	my $res = topup(@details);
+	push(@details, $res->{'responseMessage'});
+    
+    # write report
+    $csv->print($fh, \@details);
 }
 
-print FH @cash;
+close $fh;
 
-print Dumper(@cash);
+sub topup {
+	my (@details) = @_;
+	my $url = 'http://www.mocky.io/v2/588176082500008815c9edf1'; 
+	my $json = get( $url );
+	die "Could not get $url!" unless defined $json;
 
-
-close(FH);
-
+	return decode_json( $json );
+}

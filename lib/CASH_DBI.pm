@@ -51,7 +51,7 @@ sub get_new_subscriber {
         # print $sth->rows. " rows found.\n";
 
         while (my $ref = $sth->fetchrow_hashref()) {
-            push(@subs, $ref->{'msisdn'}."|".$ref->{'service_id'}."|".$ref->{'ac'});
+            push(@subs, $ref->{'msisdn'}.":".$ref->{'service_id'}.":".$ref->{'ac'});
             # print $ref->{'msisdn'};
         }
 
